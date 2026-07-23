@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - "frontend/**"
-    paths-ignore:
-      - "k8s/**"
+    
 
 permissions:
   id-token: write
