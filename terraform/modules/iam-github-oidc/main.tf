@@ -29,17 +29,20 @@ data "aws_iam_policy_document" "github_assume_role" {
     }
 
     # CHANGE THIS BLOCK
+       # REPLACE YOUR EXISTING 'sub' CONDITION WITH THIS BLOCK
     condition {
-      test     = "StringLike" # Changed from StringEquals to allow wildcards
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        # Matches NEW repos (with immutable IDs): repo:org@123/repo@456:ref:refs/heads/main
-        "repo:${var.github_repository}@*/*@*:ref:refs/heads/${var.github_branch}",
+        # Pattern 1: NEW Immutable Format (Matches repos created after July 15, 2026)
+        # Structure: repo:OWNER@OWNER_ID/REPO@REPO_ID:ref:refs/heads/BRANCH
+        "repo:${split("/", var.github_repository)[0]}@*/${split("/", var.github_repository)[1]}@*:ref:refs/heads/${var.github_branch}",
         
-        # Matches OLD repos (legacy names): repo:org/repo:ref:refs/heads/main
+        # Pattern 2: LEGACY Format (Matches older repos)
+        # Structure: repo:OWNER/REPO:ref:refs/heads/BRANCH
         "repo:${var.github_repository}:ref:refs/heads/${var.github_branch}"
       ]
-    }
+    }   
   }
 }   
 
