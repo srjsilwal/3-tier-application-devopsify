@@ -51,7 +51,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::289050430809:role/github-actions-role
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
           aws-region: us-east-1
           
       - name: Login to Amazon ECR
@@ -70,9 +70,7 @@ jobs:
 
       - name: Update Kubernetes Manifest
         run: |
-          sed -i \
-          "s|image:.*|image: ${{ secrets.FRONTEND_ECR_URI }}:${{github.sha}}|"\
-          k8s/frontend/deployment.yaml
+         sed -i "s#image:.*#image: ${{ secrets.FRONTEND_ECR_URI }}:${{ github.sha }}#" k8s/frontend/deployment.yaml   
 
       - name: Commit Manifest Changes
         run: |
