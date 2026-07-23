@@ -1,18 +1,29 @@
+# Node.js
 node_modules/
 dist/
 .env
+.env.*
 *.log
 
 # Terraform
-terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.backup
-terraform/.terraform.lock.hcl
-terraform/crash.log
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+crash.log
+
+# Keep the lock file in Git
+#! .terraform.lock.hcl
 
 # Docker
 *.tar
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+
+# IDE files
+.vscode/
+.idea/

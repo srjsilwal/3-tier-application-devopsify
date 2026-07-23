@@ -1,0 +1,88 @@
+name: Frontend CI Pipeline
+
+on:
+  push:
+    paths:
+      - "frontend/**"
+    paths-ignore:
+      - "k8s/**"
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Run EsLint
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Run Dependency Scan
+        working-directory: ./frontend
+        run: npm run audit --audit-level=high
+
+      - name: Build Frontend Docker Image
+        run: |
+          docker build \
+          -t jerney-frontend:latest \
+          ./frontend
+
+      - name: Scan Frontend Docker Image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: jerney-frontend:latest
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.AWS_ROLE_ARN}}
+          aws-region: us-east-1
+          
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Frontend Docker Image
+        run: |
+            docker tag jerney-frontend:latest \
+            ${{secrets.FRONTEND_ECR_URI}}:${{github.sha}}
+
+      - name: Push Frontend Docker Image
+        run: |
+            docker push \
+            ${{ secrets.FRONTEND_ECR_URI }}:${{github.sha}}
+   
+      - name: Update Kubernetes Manifest
+        run: |
+          sed -i \
+          "s|image:.*|image: ${{ secrets.FRONTEND_ECR_URI }}:${{github.sha}}|"\
+          k8s/frontend/deployment.yaml
+
+      - name: Commit Manifest Changes
+        run: |
+          git config --global user.name  "github-actions"
+          git config --global user.email \
+          "github-actions@github.com"
+          git add k8s/frontend/deployment.yaml
+          git commit -m \
+          "update frontend image tag" || true
+
+      - name: Push Changes
+        run: |
+          git push

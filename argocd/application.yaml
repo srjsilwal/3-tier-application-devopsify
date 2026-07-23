@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jerney
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/srjsilwal/3-tier-application-devopsify
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jerney
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+
+      - CreateNamespace=true
