@@ -2,12 +2,14 @@ name: Frontend CI Pipeline
 
 on:
   push:
+    branches:
+        - main
     paths:
       - "frontend/**"
 
 permissions:
   id-token: write
-  contents: write
+  contents: read
 
 jobs:
   frontend:
@@ -58,7 +60,9 @@ jobs:
          echo "Actor=${{ github.actor }}"  
       - name: Print Role
         run: |
-         echo "${{ secrets.AWS_ROLE_ARN }}"     
+         echo "${{ secrets.AWS_ROLE_ARN }}"  
+      - name: Debug OIDC Claims
+        uses: github/actions-oidc-debugger@main      
   
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
