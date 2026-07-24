@@ -57,12 +57,12 @@ spec:
               memory: "512Mi"
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 5000
 
             initialDelaySeconds: 30
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 5000
             initialDelaySeconds: 20
