@@ -1,180 +1,386 @@
-# 🛤️ Jerney — Blog Platform
+# 🚀 Jerney - Production-Ready DevSecOps Blog Platform
 
-A Gen-Z vibe blog platform built with a 3-tier architecture — React frontend, Node.js backend, and PostgreSQL database.
+Jerney is a production-ready 3-tier blog platform built using modern DevSecOps practices. The project combines a React frontend, Node.js backend, and PostgreSQL database with cloud-native deployment on AWS using Kubernetes.
 
-![Tech Stack](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
-![Tech Stack](https://img.shields.io/badge/Node.js-20-339933?style=flat-square&logo=node.js)
-![Tech Stack](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)
+This project demonstrates the complete DevSecOps lifecycle including Infrastructure as Code, containerization, CI/CD automation, Kubernetes orchestration, GitOps deployments, and security best practices.
+
+## Tech Stack
+
+### Application Stack
+
+* React (Vite)
+* Node.js
+* Express.js
+* PostgreSQL
+* Nginx
+
+### DevOps Stack
+
+* Docker
+* Kubernetes
+* Amazon EKS
+* Terraform
+* GitHub Actions
+* ArgoCD
+* Amazon ECR
+* Amazon RDS
+* GitHub OIDC Authentication
+
+### Security
+
+* IAM Roles and Policies
+* OpenID Connect (OIDC)
+* Secret Management using Kubernetes Secrets
+* Container Security Scanning
+* Health Checks and Readiness Probes
+* GitOps-based Deployments
 
 ---
 
-> [!IMPORTANT]
-> **Looking for the full DevSecOps implementation?**
-> Switch to the [`devops`](../../tree/devops) branch for Docker, Kubernetes (EKS Auto Mode), Terraform, CI/CD with GitHub Actions, container security scanning, and more.
->
-> ```bash
-> git checkout devops
-> ```
+## Architecture
+
+```
+                           GitHub Repository
+                                    |
+                                    |
+                             GitHub Actions
+                                    |
+                       ------------------------------
+                       |                            |
+                  Build Images                 Security Checks
+                       |                            |
+                       --------------------------------
+                                    |
+                                    |
+                             Push Images to ECR
+                                    |
+                                    |
+                               ArgoCD (GitOps)
+                                    |
+                                    |
+                                 Amazon EKS
+                                    |
+               ------------------------------------------------
+               |                                              |
+          Frontend                                        Backend
+       (React + Nginx)                               (Node + Express)
+            Port 80                                      Port 5000
+               |                                              |
+               ------------------------------------------------
+                                    |
+                               Amazon RDS
+                                PostgreSQL
+                                  5432
+                                    |
+                                 AWS VPC
+```
 
 ---
 
-## ✨ Features
+## Project Structure
 
-- 📝 Create blog posts with emoji vibes
-- ✏️ Edit your existing posts
-- 🗑️ Delete posts you're not feeling anymore
-- 💬 Comment on posts
-- 🎨 Gen-Z dark UI with glassmorphism and gradients
-
-## 🏗️ Architecture
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Frontend   │────▶│   Backend    │────▶│  PostgreSQL   │
-│   (React +   │◀────│  (Node.js +  │◀────│              │
-│    Nginx)    │     │   Express)   │     │              │
-│   Port 80    │     │  Port 5000   │     │  Port 5432   │
-└──────────────┘     └──────────────┘     └──────────────┘
-```
-
-## 📁 Project Structure
-
-```
-Jerney/
-├── frontend/                # React (Vite) frontend
-│   ├── src/                 # React components & pages
-│   ├── nginx.conf           # Nginx config for serving the app
+```text
+.
+├── argocd/
+│   └── application.yaml
+│
+├── backend/
+│   ├── src/
+│   ├── Dockerfile
 │   └── package.json
-├── backend/                 # Node.js Express API
-│   ├── src/                 # Routes, DB connection
+│
+├── frontend/
+│   ├── src/
+│   ├── Dockerfile
+│   ├── nginx.conf
 │   └── package.json
-├── deploy/                  # EC2 deployment scripts
-│   ├── setup.sh             # One-click EC2 setup script
-│   └── jerney-nginx.conf    # Nginx reverse proxy config
+│
+├── k8s/
+│   ├── backend/
+│   ├── frontend/
+│   ├── ingress/
+│   ├── namespace/
+│   ├── secrets/
+│   └── kustomization.yaml
+│
+├── terraform/
+│   ├── environments/
+│   └── modules/
+│       ├── ecr/
+│       ├── eks/
+│       ├── iam-github-oidc/
+│       ├── networking/
+│       └── rds/
+│
+├── docs/
+│
+├── docker-compose.yml
 └── README.md
 ```
 
 ---
 
-## 🚀 Deploy on AWS EC2
+## Features
 
-### Prerequisites
+### Application Features
 
-- An AWS EC2 instance running **Ubuntu 22.04+**
-- Security Group allowing inbound traffic on ports **22** (SSH) and **80** (HTTP)
-- SSH access to the instance
+* Create blog posts
+* Edit blog posts
+* Delete blog posts
+* Comment system
+* Responsive UI
+* Health check endpoints
 
-### Step 1: Transfer the Code to EC2
+### DevSecOps Features
 
-```bash
-# From your local machine
-scp -r -i your-key.pem ./Jerney ubuntu@<EC2_PUBLIC_IP>:~/Jerney
-```
+* Infrastructure as Code using Terraform
+* Kubernetes deployment manifests
+* GitOps deployment using ArgoCD
+* CI/CD pipelines using GitHub Actions
+* Container image storage using Amazon ECR
+* PostgreSQL deployment using Amazon RDS
+* Kubernetes Horizontal Pod Autoscaling
+* Liveness and Readiness probes
+* OIDC authentication for GitHub Actions
+* Automated image updates
+* Automated deployments
+* Namespace isolation
+* Secret management
+* Production-ready architecture
 
-### Step 2: SSH into the Instance
+---
 
-```bash
-ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP>
-```
+## Infrastructure Components
 
-### Step 3: Run the Setup Script
+| Component          | Service        |
+| ------------------ | -------------- |
+| Cloud Provider     | AWS            |
+| Container Registry | Amazon ECR     |
+| Kubernetes         | Amazon EKS     |
+| Database           | Amazon RDS     |
+| CI/CD              | GitHub Actions |
+| GitOps             | ArgoCD         |
+| Infrastructure     | Terraform      |
+| Reverse Proxy      | Nginx          |
+| Containerization   | Docker         |
+| Authentication     | GitHub OIDC    |
 
-The `deploy/setup.sh` script installs everything and configures the app automatically:
+---
 
-```bash
-cd ~/Jerney
-chmod +x deploy/setup.sh
-./deploy/setup.sh
-```
+## Deployment Workflow
 
-This script will:
-1. Update system packages
-2. Install **Node.js 20.x**, **PostgreSQL 16**, **Nginx**, and **PM2**
-3. Create the database and user
-4. Install backend dependencies
-5. Build the React frontend
-6. Configure Nginx as a reverse proxy
-7. Start the backend with PM2 (auto-restarts on crash/reboot)
-
-### Step 4: Access the App
-
-Open your browser and go to:
-
-```
-http://<EC2_PUBLIC_IP>
-```
-
-### Useful Commands
-
-```bash
-pm2 status                          # Check backend status
-pm2 logs                            # View backend logs
-pm2 restart all                     # Restart backend
-sudo systemctl restart nginx        # Restart Nginx
-sudo -u postgres psql -d jerney_db  # Connect to database
+```text
+Developer
+    |
+    |
+ git push
+    |
+    |
+GitHub Repository
+    |
+    |
+GitHub Actions
+    |
+    |
+----------------------------
+|            |              |
+Lint         Build         Scan
+|             |             |
+-------------Docker---------
+               |
+               |
+         Push to ECR
+               |
+               |
+         Update Manifests
+               |
+               |
+            ArgoCD
+               |
+               |
+            Sync
+               |
+               |
+         Deploy to EKS
+               |
+               |
+      ---------------------
+      |                   |
+   Frontend            Backend
+      |                   |
+      ---------------------
+               |
+               |
+            Amazon RDS
 ```
 
 ---
 
-## 🧑‍💻 Local Development (Without Docker)
-
-### Prerequisites
-
-- Node.js 20+
-- PostgreSQL 16+
+## Local Development
 
 ### Backend
 
 ```bash
 cd backend
+
 npm install
 
-# Create a .env file (or export these variables)
-export DB_HOST=localhost
-export DB_PORT=5432
-export DB_USER=jerney_user
-export DB_PASSWORD=jerney_pass_2026
-export DB_NAME=jerney_db
-export PORT=5000
-
 npm start
+```
+
+Required environment variables:
+
+```bash
+DB_HOST=
+DB_PORT=5432
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+PORT=5000
 ```
 
 ### Frontend
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
-The Vite dev server starts on `http://localhost:3000` and proxies `/api` requests to the backend at `http://localhost:5000`.
+---
+
+## Running with Docker
+
+```bash
+docker compose up --build
+```
 
 ---
 
-## 📡 API Endpoints
+## Kubernetes Deployment
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| GET | `/api/posts` | Get all posts |
-| GET | `/api/posts/:id` | Get single post with comments |
-| POST | `/api/posts` | Create a new post |
-| PUT | `/api/posts/:id` | Update a post |
-| DELETE | `/api/posts/:id` | Delete a post |
-| GET | `/api/comments/post/:postId` | Get comments for a post |
-| POST | `/api/comments` | Create a comment |
-| DELETE | `/api/comments/:id` | Delete a comment |
+Apply the manifests:
 
----
+```bash
+kubectl apply -k k8s/
+```
 
-## 🌿 Branch Strategy
+Verify the resources:
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Source code + EC2 bare-metal deployment |
-| `devops` | Full DevSecOps — Docker, Kubernetes (EKS), Terraform, CI/CD pipeline, security scanning |
+```bash
+kubectl get pods -n jerney
+
+kubectl get svc -n jerney
+
+kubectl get deployment -n jerney
+
+kubectl get ingress -n jerney
+```
 
 ---
 
-Built with 💜 by the Jerney team. No cap, this blog platform hits different. 🛤️
+## Terraform Deployment
+
+Initialize Terraform:
+
+```bash
+terraform init
+```
+
+Create infrastructure:
+
+```bash
+terraform apply
+```
+
+Terraform provisions:
+
+* VPC
+* EKS Cluster
+* Amazon RDS
+* Amazon ECR
+* GitHub OIDC IAM Roles
+* Networking Components
+
+---
+
+## ArgoCD Deployment
+
+Deploy the application:
+
+```bash
+kubectl apply -f argocd/application.yaml
+```
+
+Verify the application:
+
+```bash
+kubectl get applications -n argocd
+
+kubectl describe application jerney -n argocd
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint                   |
+| ------ | -------------------------- |
+| GET    | /api/health                |
+| GET    | /api/posts                 |
+| GET    | /api/posts/:id             |
+| POST   | /api/posts                 |
+| PUT    | /api/posts/:id             |
+| DELETE | /api/posts/:id             |
+| GET    | /api/comments/post/:postId |
+| POST   | /api/comments              |
+| DELETE | /api/comments/:id          |
+
+---
+
+## What I Learned
+
+This project provided hands-on experience with:
+
+* Docker
+* Kubernetes
+* Amazon EKS
+* Terraform
+* GitHub Actions
+* ArgoCD
+* GitOps workflows
+* Infrastructure as Code
+* Amazon RDS
+* Amazon ECR
+* Kubernetes networking
+* Secret management
+* Health checks
+* Horizontal Pod Autoscaling
+* CI/CD pipelines
+* OpenID Connect (OIDC)
+* Production deployment strategies
+* Debugging real-world deployment issues
+
+---
+
+## Acknowledgements
+
+Special thanks to **Abhishek Veeramalla (iam-veeramalla)** for his exceptional DevOps and Cloud learning resources, which provided valuable guidance and inspiration throughout this project's DevSecOps implementation.
+
+The original Jerney application serves as the foundation of this work. The DevSecOps architecture, cloud infrastructure, CI/CD pipelines, Kubernetes deployment strategy, and productionization efforts were implemented as part of this learning project.
+
+---
+
+## Disclaimer
+
+This repository is intended for educational and portfolio purposes. It demonstrates real-world DevSecOps practices including cloud infrastructure provisioning, GitOps workflows, CI/CD automation, Kubernetes deployments, and security-focused development practices.
+
+---
+
+## Author
+
+**Suraj Silwal**
+
+> Building production-ready DevOps and DevSecOps projects one deployment at a time.
