@@ -32,16 +32,21 @@ spec:
                   name: postgres-secret
                   key: DB_NAME
 
-            - name: DB_USERNAME
+            - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                 name: postgres-secret
-                 key: DB_USERNAME
+                  name: postgres-secret
+                  key: DB_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                 name: postgres-secret
-                 key: DB_PASSWORD
+                  name: postgres-secret
+                  key: DB_PASSWORD
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PORT
 
           resource:
             requests:
@@ -58,6 +63,6 @@ spec:
             initialDelaySeconds: 30
           readinessProbe:
             httpGet:
-             path: /health
-             port: 5000
+              path: /health
+              port: 5000
             initialDelaySeconds: 20

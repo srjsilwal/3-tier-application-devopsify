@@ -46,7 +46,7 @@ module "networking" {
 module "rds" {
   source             = "../../modules/rds"
   db_name            = "jerney"
-  db_username        = "postgres"
+  db_user            = "postgres"
   db_password        = var.db_password
   vpc_id             = module.networking.vpc_id
   private_subnet_ids = module.networking.private_subnet_ids
