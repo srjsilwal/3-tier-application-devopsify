@@ -7,7 +7,7 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT, 10),
   database: process.env.DB_NAME,
   ssl: {
-    rejectUnauthorized: false, // or true + ca cert, see note below
+    rejectUnauthorized: false,
   },
 });
 
