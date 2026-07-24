@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 289050430809.dkr.ecr.us-east-1.amazonaws.com/dev-jerney-frontend:7388aceb809e192ce0679cd484091fb5fca5a1ee
+          image: 289050430809.dkr.ecr.us-east-1.amazonaws.com/dev-jerney-frontend:ba80a1030097e0372ca860ba4edd4a194d190ce2
           imagePullPolicy: Always
           ports:
             - containerPort: 80
