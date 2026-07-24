@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
          name: trivy-results
-        path: trivy-results.json
+         path: trivy-results.json
 
 
       - name: Configure AWS Credentials
