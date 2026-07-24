@@ -42,6 +42,22 @@ jobs:
           -t jerney-backend:latest \
           ./backend
 
+      - name: Check Docker Image
+        run: |
+         docker run --rm jerney-backend:latest ls /app/node_modules
+
+      - name: Check tar package
+        run: |
+         docker run --rm jerney-backend:latest npm ls tar
+
+      - name: Check sigstore package
+        run: |
+         docker run --rm jerney-backend:latest npm ls sigstore
+
+      - name: Check brace-expansion package
+        run: |
+         docker run --rm jerney-backend:latest npm ls brace-expansion
+
       - name: Scan Backend Docker Image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
