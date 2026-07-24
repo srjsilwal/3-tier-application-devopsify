@@ -4,6 +4,13 @@ metadata:
   name: jerney
   namespace: argocd
 spec:
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: postgres-secret
+      namespace: jerney
+      jsonPointers:
+        - /data
   project: default
   source:
     repoURL: https://github.com/srjsilwal/3-tier-application-devopsify
