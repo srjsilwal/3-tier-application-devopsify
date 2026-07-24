@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 289050430809.dkr.ecr.us-east-1.amazonaws.com/dev-jerney-backend:18f1f8a457f7a0d29052b5758943ba6ba2dac709
+          image: 289050430809.dkr.ecr.us-east-1.amazonaws.com/dev-jerney-backend:f9fcc0fcb86207538f2bbada24e8cceb7b4f8b55
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
